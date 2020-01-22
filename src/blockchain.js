@@ -3,6 +3,7 @@ function Blockchain() {
     this.newTransactions = []; // transactions placed here before into a block
 }   
 
+
 /**
  * Method for creating new block
  * 
@@ -27,3 +28,12 @@ Blockchain.prototype.createNewBlock = function(nonce, previousHash, hash) {
     this.chain.push(newBlock); // add the new block
     return newBlock;
 }
+
+
+// Returns the newest block on the chain, last block added
+Blockchain.prootype.getLastBlock = function() {
+    return this.chain[this.chain.length - 1];
+}
+
+
+module.exports = Blockchain;

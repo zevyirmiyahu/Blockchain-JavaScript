@@ -1,6 +1,6 @@
 function Blockchain() {
     this.chain = []; // Where all block are stored
-    this.newTransactions = []; // transactions placed here before into a block
+    this.pendingTransactions = []; // transactions placed here before into a block
 }   
 
 
@@ -18,13 +18,13 @@ Blockchain.prototype.createNewBlock = function(nonce, previousHash, hash) {
     const newBlock = {
         index: this.chain.length + 1, // the number of the block within the chain
         timeStamp: Date.now(), // when the block was created
-        transactions: this.newTransactions, // put all new (pending) transactions into block
+        transactions: this.pendingTransactions, // put all pending transactions into block
         nonce: nonce, // Number used Once, validates block
         hash: hash, // hash of current block
         previousHash: previousHash // hash of the previous block
     };
 
-    this.newTransactions = []; // reset transactions array
+    this.pendingTransactions = []; // reset transactions array
     this.chain.push(newBlock); // add the new block
     return newBlock;
 }
@@ -33,6 +33,26 @@ Blockchain.prototype.createNewBlock = function(nonce, previousHash, hash) {
 // Returns the newest block on the chain, last block added
 Blockchain.prootype.getLastBlock = function() {
     return this.chain[this.chain.length - 1];
+}
+
+/**
+ * Creates a newTransaction object, 
+ * Adds it to pendingTransactions,
+ * returns number of the block transaction is added to
+ * 
+ * amount:      amount being sent in transaction
+ * sender:      address of the sender
+ * recipient:    address of the recipient
+ */
+Blockchain.prototype.createNewTransaction = function(amount, sender, recipient) {
+    const newTransaction ={
+        amount: amount,
+        sender: sender,
+        recipient: recipient
+    };
+
+    this.pendingTransactions.push(newTransaction);
+    return this.getLastBlock().index + 1;
 }
 
 

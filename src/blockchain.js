@@ -1,3 +1,6 @@
+
+const sha256 = require('sha256');
+
 function Blockchain() {
     this.chain = []; // Where all block are stored
     this.pendingTransactions = []; // transactions placed here before into a block
@@ -16,7 +19,7 @@ function Blockchain() {
  */
 Blockchain.prototype.createNewBlock = function(nonce, previousHash, hash) {
     const newBlock = {
-        index: this.chain.length + 1, // the number of the block within the chain
+        index: this.chain.length + 1, // the number of the block within the chain (BitCoin, this is called height)
         timeStamp: Date.now(), // when the block was created
         transactions: this.pendingTransactions, // put all pending transactions into block
         nonce: nonce, // Number used Once, validates block
@@ -31,28 +34,36 @@ Blockchain.prototype.createNewBlock = function(nonce, previousHash, hash) {
 
 
 // Returns the newest block on the chain, last block added
-Blockchain.prootype.getLastBlock = function() {
+Blockchain.prototype.getLastBlock = function() {
     return this.chain[this.chain.length - 1];
 }
 
 /**
  * Creates a newTransaction object, 
  * Adds it to pendingTransactions,
- * returns number of the block transaction is added to
+ * returns number of the block transaction is added to.
+ * *NOTE: any new transaction is pending by default.
  * 
  * amount:      amount being sent in transaction
  * sender:      address of the sender
  * recipient:    address of the recipient
  */
 Blockchain.prototype.createNewTransaction = function(amount, sender, recipient) {
-    const newTransaction ={
+    const newTransaction = {
         amount: amount,
         sender: sender,
         recipient: recipient
     };
 
     this.pendingTransactions.push(newTransaction);
-    return this.getLastBlock().index + 1;
+    return this.getLastBlock().index + 1; //['index'] + 1;
+}
+
+// Takes a block and returns a hash for that block
+Blockchain.prototype.hashBlock = function(previousHash, currentBlockData, nonce) {
+    const dataAsString = previousHash + nonce.toString() + JSON.stringify(currentBlockData);
+    const hash = sha256(dataAsString);
+    return hash;
 }
 
 

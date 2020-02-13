@@ -66,5 +66,20 @@ Blockchain.prototype.hashBlock = function(previousHash, currentBlockData, nonce)
     return hash;
 }
 
+/**
+ * returns a valid nonce, to prove (solve) the the problem of finding which nonce
+ * makes a valid hash. A valid hash here is defined by a hash that has four leading
+ * zeros. proofOfWork is then varified easily by other miners,
+ * that then confirm the nonce.
+ */
+Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData) {
+    // a valid hash has four leading zeros
+    const nonce = 0;
+    while(true) {
+        hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+        if(hash.substring(0, 4) === '0000') return nonce;
+        else nonce++;
+    }
+}
 
 module.exports = Blockchain;
